@@ -51,7 +51,7 @@ impl EventHandler for Bot {
             // Check spam status.
             let current_timestamp: i64 = msg.timestamp.unix_timestamp();
             let is_spam: bool = match self.hash_map.get(msg.author.id.0) {
-                Some(timestamp) => timestamp + 1 > current_timestamp,
+                Some(timestamp) => timestamp + self.spam_period > current_timestamp,
                 None => false,
             };
             if is_spam {
