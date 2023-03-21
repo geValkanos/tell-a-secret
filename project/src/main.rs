@@ -2,6 +2,7 @@ use serenity::prelude::*;
 
 use log::error;
 
+mod common;
 mod config;
 mod discord;
 
@@ -18,15 +19,7 @@ async fn main() {
         | GatewayIntents::DIRECT_MESSAGES;
 
     let mut client = Client::builder(&config.discord_token, intents)
-        .event_handler(discord::Bot {
-            bot_id: config.bot_id,
-            guild_id: config.guild_id,
-            channel_id: config.channel_id,
-            hash_map: discord::Spam {
-                ..Default::default()
-            },
-            spam_period: config.spam_period,
-        })
+        .event_handler(discord::Bot::new(config))
         .await
         .expect("Err creating client");
 

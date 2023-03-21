@@ -1,6 +1,3 @@
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-
 use log::{error, info};
 use serenity::async_trait;
 use serenity::client::EventHandler;
@@ -9,38 +6,27 @@ use serenity::model::gateway::Ready;
 use serenity::model::id::{ChannelId, GuildId};
 use serenity::prelude::Context;
 
-pub struct Spam {
-    pub hash_map: Arc<Mutex<HashMap<u64, i64>>>,
-}
-
-impl Default for Spam {
-    fn default() -> Self {
-        Spam {
-            hash_map: Arc::new(Mutex::new(HashMap::new())),
-        }
-    }
-}
-
-impl Spam {
-    fn insert(&self, id: u64, timestamp: i64) {
-        let data = Arc::clone(&self.hash_map);
-        let mut dt = data.lock().unwrap();
-        (*dt).insert(id, timestamp);
-    }
-
-    fn get(&self, id: u64) -> Option<i64> {
-        let data = Arc::clone(&self.hash_map);
-        let dt = data.lock().unwrap();
-        (*dt).get(&id).copied()
-    }
-}
+use crate::common::spam::Spam;
+use crate::config::Config;
 
 pub struct Bot {
-    pub channel_id: ChannelId,
-    pub guild_id: GuildId,
-    pub bot_id: u64,
-    pub spam_period: i64,
-    pub hash_map: Spam,
+    channel_id: ChannelId,
+    guild_id: GuildId,
+    bot_id: u64,
+    spam_period: i64,
+    hash_map: Spam,
+}
+
+impl Bot {
+    pub fn new(config: Config) -> Self {
+        Bot {
+            bot_id: config.bot_id,
+            guild_id: config.guild_id,
+            channel_id: config.channel_id,
+            hash_map: Spam::new(),
+            spam_period: config.spam_period,
+        }
+    }
 }
 
 #[async_trait]
