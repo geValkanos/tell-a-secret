@@ -6,12 +6,12 @@ RUN USER=root cargo new --bin tell-a-secret
 WORKDIR ./tell-a-secret
 
 # Copy the cargo manifests and build the dependencies without the app code
-COPY project/Cargo.toml project/Cargo.lock ./
+COPY Cargo.toml Cargo.lock ./
 RUN cargo build --release
 RUN rm src/*.rs
 
 RUN ls
-COPY project/src/ ./src/
+COPY src/ ./src/
 RUN ls src
 RUN rm ./target/release/deps/tell_a_secret*
 RUN cargo build --release

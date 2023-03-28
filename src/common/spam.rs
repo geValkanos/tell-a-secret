@@ -24,3 +24,23 @@ impl Spam {
         (*dt).get(&id).copied()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn insert_and_update() {
+        let test_spam = Spam::new();
+        test_spam.insert(1, 1);
+        assert_eq!(test_spam.get(1), Some(1));
+        test_spam.insert(1, 2);
+        assert_eq!(test_spam.get(1), Some(2));
+    }
+
+    #[test]
+    fn get_not_exists() {
+        let test_spam = Spam::new();
+        assert_eq!(test_spam.get(1), None);
+    }
+}
